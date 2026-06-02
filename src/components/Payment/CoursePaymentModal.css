@@ -1,0 +1,206 @@
+.course-payment-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.course-payment-modal {
+  background: var(--surface-bg);
+  width: 100%;
+  max-width: 480px;
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.cpm-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.cpm-close-btn:hover {
+  background: var(--gray-100);
+  color: var(--text-primary);
+}
+
+.cpm-header {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--border-light);
+  background: linear-gradient(180deg, var(--gray-50) 0%, var(--surface-bg) 100%);
+}
+
+.cpm-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+
+.cpm-header h2 svg {
+  color: var(--primary-500);
+}
+
+.cpm-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0;
+}
+
+.cpm-subtitle strong {
+  color: var(--primary-600);
+}
+
+.cpm-methods {
+  display: flex;
+  gap: 10px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--gray-50);
+}
+
+.cpm-method-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-light);
+  background: var(--surface-bg);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cpm-method-btn:hover {
+  border-color: var(--primary-300);
+  color: var(--primary-600);
+}
+
+.cpm-method-btn.active {
+  background: var(--primary-50);
+  border-color: var(--primary-500);
+  color: var(--primary-700);
+  box-shadow: 0 2px 4px rgba(51, 133, 255, 0.1);
+}
+
+.cpm-form {
+  padding: 24px;
+}
+
+.cpm-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.cpm-summary {
+  background: var(--gray-50);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 20px 0;
+}
+
+.cpm-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.cpm-line:last-child {
+  margin-bottom: 0;
+}
+
+.cpm-total {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-light);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.cpm-pay-btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+}
+
+.cpm-secure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 16px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.cpm-secure svg {
+  color: var(--success);
+}
+
+.cpm-success-state {
+  padding: 48px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cpm-success-state h2 {
+  margin: 16px 0 8px;
+  color: var(--text-primary);
+  font-size: 24px;
+}
+
+.cpm-success-state p {
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.cpm-success-state strong {
+  color: var(--primary-600);
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

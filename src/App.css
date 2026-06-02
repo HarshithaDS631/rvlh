@@ -1,0 +1,46 @@
+/* App Layout Styles */
+.app {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-light);
+  border-top-color: var(--primary-500);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.app-layout {
+  display: flex;
+  padding-top: var(--navbar-height);
+  min-height: 100vh;
+}
+
+.app-main {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  min-height: calc(100vh - var(--navbar-height));
+  transition: margin-left var(--transition-base);
+  background: var(--surface-bg);
+}
+
+.app-main.no-sidebar {
+  margin-left: 0;
+}
+
+.app-main.sidebar-collapsed {
+  margin-left: 72px;
+}
+
+@media (max-width: 768px) {
+  .app-main {
+    margin-left: 0;
+  }
+}

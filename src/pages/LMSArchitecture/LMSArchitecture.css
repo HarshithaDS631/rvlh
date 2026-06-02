@@ -1,0 +1,928 @@
+/* ============================================
+   LMS Architecture Flowchart - Dark Theme
+   ============================================ */
+
+.lms-arch {
+  min-height: 100vh;
+  background: #0a0e1a;
+  color: #e2e8f0;
+  font-family: var(--font-primary);
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* ---- Top Banner ---- */
+.lms-arch__banner {
+  background: linear-gradient(90deg, #e53e3e, #c53030);
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.lms-arch__hero {
+  text-align: center;
+  padding: 40px 20px 20px;
+}
+
+.lms-arch__hero h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #a78bfa, #818cf8, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+  line-height: 1.1;
+}
+
+.lms-arch__hero p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+/* Legend */
+.lms-arch__legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.lms-arch__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.lms-arch__legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.lms-arch__legend-dot--student { background: #38b2ac; }
+.lms-arch__legend-dot--faculty { background: #48bb78; }
+.lms-arch__legend-dot--admin { background: #e53e3e; }
+.lms-arch__legend-dot--system { background: #805ad5; }
+
+/* ---- Container ---- */
+.lms-arch__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+}
+
+/* ---- Section Titles ---- */
+.lms-arch__section {
+  margin-bottom: 60px;
+}
+
+.lms-arch__section-title {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.lms-arch__section-title--student { color: #38b2ac; }
+.lms-arch__section-title--faculty { color: #38b2ac; }
+.lms-arch__section-title--admin { color: #e53e3e; }
+.lms-arch__section-title--system { color: #805ad5; }
+
+.lms-arch__section-subtitle {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.85rem;
+  margin-bottom: 32px;
+}
+
+/* ---- Dividers ---- */
+.lms-arch__divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #6366f1, transparent);
+  margin: 0 auto 40px;
+  max-width: 800px;
+}
+
+/* ============================================
+   SECTION 1: OVERVIEW
+   ============================================ */
+
+.lms-arch__overview-layout {
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* Left auth flow panel */
+.lms-arch__auth-flow {
+  flex: 0 0 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.lms-arch__auth-card {
+  background: #111827;
+  border: 1px solid #1e293b;
+  padding: 18px 16px;
+  text-align: center;
+  position: relative;
+}
+
+.lms-arch__auth-card:first-child {
+  border-radius: 10px 10px 0 0;
+}
+
+.lms-arch__auth-card:last-child {
+  border-radius: 0 0 10px 10px;
+}
+
+.lms-arch__auth-card h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 4px;
+}
+
+.lms-arch__auth-card p {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* Connector arrow between auth cards */
+.lms-arch__auth-connector {
+  width: 2px;
+  height: 20px;
+  background: #334155;
+  margin: 0 auto;
+  position: relative;
+}
+
+.lms-arch__auth-connector::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #334155;
+}
+
+/* Dashboard columns */
+.lms-arch__dashboards {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.lms-arch__dashboard {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid;
+}
+
+.lms-arch__dashboard--student {
+  border-color: rgba(56, 178, 172, 0.3);
+}
+
+.lms-arch__dashboard--faculty {
+  border-color: rgba(72, 187, 120, 0.3);
+}
+
+.lms-arch__dashboard--admin {
+  border-color: rgba(229, 62, 62, 0.3);
+}
+
+.lms-arch__dashboard-header {
+  padding: 12px 16px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-align: center;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.lms-arch__dashboard-header--student {
+  background: linear-gradient(135deg, #234e52, #285e61);
+  color: #81e6d9;
+}
+
+.lms-arch__dashboard-header--faculty {
+  background: linear-gradient(135deg, #22543d, #276749);
+  color: #9ae6b4;
+}
+
+.lms-arch__dashboard-header--admin {
+  background: linear-gradient(135deg, #742a2a, #9b2c2c);
+  color: #feb2b2;
+}
+
+.lms-arch__dashboard-list {
+  background: #111827;
+}
+
+.lms-arch__dashboard-item {
+  padding: 10px 16px;
+  font-size: 0.82rem;
+  text-align: center;
+  border-bottom: 1px solid #1e293b;
+  transition: background 0.2s;
+}
+
+.lms-arch__dashboard-item:last-child {
+  border-bottom: none;
+}
+
+.lms-arch__dashboard-item:hover {
+  background: #1e293b;
+}
+
+.lms-arch__dashboard--student .lms-arch__dashboard-item {
+  color: #81e6d9;
+}
+
+.lms-arch__dashboard--faculty .lms-arch__dashboard-item {
+  color: #9ae6b4;
+}
+
+.lms-arch__dashboard--admin .lms-arch__dashboard-item {
+  color: #fc8181;
+}
+
+/* Core Modules Bar */
+.lms-arch__core-modules {
+  margin-top: 32px;
+}
+
+.lms-arch__core-modules h3 {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.lms-arch__modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.lms-arch__module-chip {
+  background: #111827;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 12px 10px;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #94a3b8;
+  transition: all 0.25s;
+}
+
+.lms-arch__module-chip:hover {
+  border-color: #6366f1;
+  color: #c4b5fd;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15);
+}
+
+.lms-arch__module-chip .chip-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* ============================================
+   SECTIONS 2-4: FLOW SECTIONS (Student/Faculty/Admin)
+   ============================================ */
+
+.lms-arch__flow-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.lms-arch__flow-column {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.lms-arch__flow-column:hover {
+  transform: translateY(-4px);
+}
+
+/* Student flow colors */
+.lms-arch__flow-column--student {
+  border-color: rgba(56, 178, 172, 0.25);
+}
+
+.lms-arch__flow-column--student:hover {
+  box-shadow: 0 8px 30px rgba(56, 178, 172, 0.1);
+}
+
+/* Faculty flow colors */
+.lms-arch__flow-column--faculty {
+  border-color: rgba(72, 187, 120, 0.25);
+}
+
+.lms-arch__flow-column--faculty:hover {
+  box-shadow: 0 8px 30px rgba(72, 187, 120, 0.1);
+}
+
+/* Admin flow colors */
+.lms-arch__flow-column--admin-red {
+  border-color: rgba(229, 62, 62, 0.25);
+}
+
+.lms-arch__flow-column--admin-red:hover {
+  box-shadow: 0 8px 30px rgba(229, 62, 62, 0.1);
+}
+
+.lms-arch__flow-column--admin-green {
+  border-color: rgba(72, 187, 120, 0.25);
+}
+
+.lms-arch__flow-column--admin-green:hover {
+  box-shadow: 0 8px 30px rgba(72, 187, 120, 0.1);
+}
+
+.lms-arch__flow-column--admin-purple {
+  border-color: rgba(128, 90, 213, 0.25);
+}
+
+.lms-arch__flow-column--admin-purple:hover {
+  box-shadow: 0 8px 30px rgba(128, 90, 213, 0.1);
+}
+
+/* Flow column header */
+.lms-arch__flow-header {
+  padding: 14px 16px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-align: center;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.lms-arch__flow-header--teal {
+  background: linear-gradient(135deg, #234e52, #285e61);
+  color: #81e6d9;
+}
+
+.lms-arch__flow-header--green {
+  background: linear-gradient(135deg, #22543d, #276749);
+  color: #9ae6b4;
+}
+
+.lms-arch__flow-header--red {
+  background: linear-gradient(135deg, #742a2a, #9b2c2c);
+  color: #feb2b2;
+}
+
+.lms-arch__flow-header--purple {
+  background: linear-gradient(135deg, #44337a, #553c9a);
+  color: #d6bcfa;
+}
+
+/* Flow items */
+.lms-arch__flow-items {
+  background: #111827;
+}
+
+.lms-arch__flow-item {
+  padding: 12px 16px;
+  text-align: center;
+  border-bottom: 1px solid #1e293b;
+  transition: background 0.2s;
+}
+
+.lms-arch__flow-item:last-child {
+  border-bottom: none;
+}
+
+.lms-arch__flow-item:hover {
+  background: #1a2332;
+}
+
+.lms-arch__flow-item h5 {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.lms-arch__flow-item p {
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
+/* Color variants for flow item titles */
+.lms-arch__flow-item--teal h5 { color: #81e6d9; }
+.lms-arch__flow-item--green h5 { color: #9ae6b4; }
+.lms-arch__flow-item--red h5 { color: #fc8181; }
+.lms-arch__flow-item--purple h5 { color: #d6bcfa; }
+
+/* ============================================
+   HORIZONTAL FLOW (Doubt Resolution, Course Builder)
+   ============================================ */
+
+.lms-arch__h-flow {
+  margin-top: 8px;
+}
+
+.lms-arch__h-flow-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lms-arch__h-flow-title .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.lms-arch__h-flow-steps {
+  display: flex;
+  gap: 0;
+  align-items: stretch;
+}
+
+.lms-arch__h-flow-step {
+  flex: 1;
+  padding: 14px 12px;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 8px;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.lms-arch__h-flow-step:hover {
+  transform: translateY(-3px);
+}
+
+/* Step connector arrows */
+.lms-arch__h-flow-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  flex-shrink: 0;
+  color: #475569;
+  font-size: 1.2rem;
+}
+
+/* Doubt flow colors */
+.lms-arch__h-flow-step--teal {
+  background: linear-gradient(135deg, #234e52, #285e61);
+  color: #81e6d9;
+  border: 1px solid rgba(56, 178, 172, 0.3);
+}
+
+/* Course builder flow colors */
+.lms-arch__h-flow-step--green {
+  background: linear-gradient(135deg, #22543d, #276749);
+  color: #9ae6b4;
+  border: 1px solid rgba(72, 187, 120, 0.3);
+}
+
+.lms-arch__h-flow-step--highlight {
+  background: linear-gradient(135deg, #742a2a, #9b2c2c);
+  color: #feb2b2;
+  border: 1px solid rgba(229, 62, 62, 0.4);
+  box-shadow: 0 0 15px rgba(229, 62, 62, 0.15);
+}
+
+/* ============================================
+   SECTION 5: SYSTEM ARCHITECTURE
+   ============================================ */
+
+.lms-arch__tech-label {
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  margin-top: 24px;
+}
+
+/* Tech Architecture */
+.lms-arch__sub-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #a78bfa;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lms-arch__sub-title .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+/* Frontend layer */
+.lms-arch__frontend-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.lms-arch__tech-box {
+  background: #111827;
+  border: 1px solid #1e293b;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  transition: all 0.25s;
+}
+
+.lms-arch__tech-box:hover {
+  border-color: #6366f1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.12);
+}
+
+.lms-arch__tech-box h4 {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.lms-arch__tech-box p {
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.lms-arch__tech-box--blue h4 { color: #93c5fd; }
+.lms-arch__tech-box--green h4 { color: #9ae6b4; }
+.lms-arch__tech-box--red h4 { color: #fc8181; }
+.lms-arch__tech-box--purple h4 { color: #d6bcfa; }
+
+/* API Gateway */
+.lms-arch__gateway {
+  background: linear-gradient(135deg, #1e3a5f, #1e40af);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #93c5fd;
+  margin-bottom: 16px;
+  transition: box-shadow 0.3s;
+}
+
+.lms-arch__gateway:hover {
+  box-shadow: 0 0 25px rgba(99, 102, 241, 0.2);
+}
+
+/* Microservices */
+.lms-arch__services-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* Data layer */
+.lms-arch__data-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.lms-arch__data-box {
+  background: #111827;
+  border: 1px solid #1e293b;
+  border-radius: 10px;
+  padding: 14px 12px;
+  text-align: center;
+  transition: all 0.25s;
+}
+
+.lms-arch__data-box:hover {
+  border-color: #805ad5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(128, 90, 213, 0.12);
+}
+
+.lms-arch__data-box h4 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #d6bcfa;
+  margin-bottom: 4px;
+}
+
+.lms-arch__data-box p {
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
+/* Key Integrations */
+.lms-arch__integrations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.lms-arch__integration-chip {
+  background: #111827;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 12px 10px;
+  text-align: center;
+  transition: all 0.25s;
+}
+
+.lms-arch__integration-chip:hover {
+  border-color: #38b2ac;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 178, 172, 0.1);
+}
+
+.lms-arch__integration-chip h5 {
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.lms-arch__integration-chip p {
+  font-size: 0.68rem;
+  color: #64748b;
+}
+
+.lms-arch__integration-chip--blue h5 { color: #93c5fd; }
+.lms-arch__integration-chip--green h5 { color: #9ae6b4; }
+.lms-arch__integration-chip--teal h5 { color: #81e6d9; }
+.lms-arch__integration-chip--purple h5 { color: #d6bcfa; }
+
+/* Security & Compliance */
+.lms-arch__security-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.lms-arch__security-chip {
+  background: linear-gradient(135deg, #1a1025, #1e1030);
+  border: 1px solid rgba(128, 90, 213, 0.25);
+  border-radius: 8px;
+  padding: 12px 10px;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #d6bcfa;
+  transition: all 0.25s;
+}
+
+.lms-arch__security-chip:hover {
+  border-color: #805ad5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(128, 90, 213, 0.15);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
+.lms-arch__footer {
+  text-align: center;
+  padding: 24px;
+  border-top: 1px solid #1e293b;
+  color: #475569;
+  font-size: 0.78rem;
+  margin-top: 40px;
+}
+
+/* ============================================
+   CONNECTOR LINES (vertical between arch sections)
+   ============================================ */
+
+.lms-arch__connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.lms-arch__connector-line {
+  width: 2px;
+  height: 20px;
+  background: #334155;
+}
+
+.lms-arch__connector-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #6366f1;
+  padding: 4px 12px;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 4px;
+  margin: 4px 0;
+  letter-spacing: 1px;
+}
+
+.lms-arch__connector-arrow {
+  color: #475569;
+  font-size: 1rem;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+.lms-arch__fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.lms-arch__fade-in--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .lms-arch__flow-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lms-arch__overview-layout {
+    flex-direction: column;
+  }
+
+  .lms-arch__auth-flow {
+    flex: none;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .lms-arch__auth-card:first-child {
+    border-radius: 10px 0 0 10px;
+  }
+
+  .lms-arch__auth-card:last-child {
+    border-radius: 0 10px 10px 0;
+  }
+
+  .lms-arch__auth-connector {
+    width: 20px;
+    height: 2px;
+    margin: auto 0;
+  }
+
+  .lms-arch__auth-connector::after {
+    bottom: 50%;
+    left: auto;
+    right: -4px;
+    transform: translateY(50%);
+    border-left: 6px solid #334155;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: none;
+  }
+
+  .lms-arch__services-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .lms-arch__hero h1 {
+    font-size: 2rem;
+  }
+
+  .lms-arch__section-title {
+    font-size: 1.4rem;
+  }
+
+  .lms-arch__dashboards {
+    grid-template-columns: 1fr;
+  }
+
+  .lms-arch__flow-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lms-arch__frontend-row {
+    grid-template-columns: 1fr;
+  }
+
+  .lms-arch__services-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lms-arch__data-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lms-arch__h-flow-steps {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .lms-arch__h-flow-arrow {
+    display: none;
+  }
+
+  .lms-arch__h-flow-step {
+    flex: 1 1 calc(50% - 8px);
+  }
+
+  .lms-arch__legend {
+    gap: 12px;
+  }
+
+  .lms-arch__auth-flow {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .lms-arch__auth-connector {
+    width: 2px;
+    height: 20px;
+    margin: 0 auto;
+  }
+
+  .lms-arch__auth-connector::after {
+    bottom: -4px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #334155;
+    border-bottom: none;
+  }
+
+  .lms-arch__auth-card:first-child {
+    border-radius: 10px 10px 0 0;
+  }
+
+  .lms-arch__auth-card:last-child {
+    border-radius: 0 0 10px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lms-arch__hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .lms-arch__container {
+    padding: 0 12px 40px;
+  }
+
+  .lms-arch__modules-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lms-arch__integrations-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lms-arch__security-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
