@@ -57,9 +57,9 @@ const defaultInitialState = {
     },
     {
       id: 'student-1',
-      name: 'Rahul Kumar',
-      email: 'rahul@student.com',
-      password: 'student',
+      name: 'Harshi',
+      email: 'harshi@student.com',
+      password: 'harshi',
       phone: '+91 91234 56781',
       role: 'student',
       type: 'rvlh',
@@ -70,8 +70,8 @@ const defaultInitialState = {
       freeQuizzesLeft: 9999,
       subscription: 'premium',
       status: 'active',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=rahul@student.com',
-      createdAt: new Date(Date.now() - 80 * 24 * 60 * 60 * 1000).toISOString()
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=harshi@student.com',
+      createdAt: new Date().toISOString()
     },
     {
       id: 'student-2',
@@ -248,10 +248,10 @@ const defaultInitialState = {
     { id: 'quiz-5', title: 'Organic Chemistry Quiz', subject: 'Chemistry', totalQuestions: 10, duration: 20, type: 'MCQ', questions: [] }
   ],
   quizResults: [
-    { id: 'qr-1', studentId: 'student-1', studentName: 'Rahul Kumar', quizId: 'quiz-1', score: 85, total: 100, subject: 'Physics', date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString() },
-    { id: 'qr-2', studentId: 'student-1', studentName: 'Rahul Kumar', quizId: 'quiz-2', score: 92, total: 100, subject: 'Mathematics', date: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString() },
-    { id: 'qr-3', studentId: 'student-1', studentName: 'Rahul Kumar', quizId: 'quiz-3', score: 78, total: 100, subject: 'Physics', date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() },
-    { id: 'qr-4', studentId: 'student-1', studentName: 'Rahul Kumar', quizId: 'quiz-5', score: 88, total: 100, subject: 'Chemistry', date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
+    { id: 'qr-1', studentId: 'student-1', studentName: 'Harshi', quizId: 'quiz-1', score: 85, total: 100, subject: 'Physics', date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString() },
+    { id: 'qr-2', studentId: 'student-1', studentName: 'Harshi', quizId: 'quiz-2', score: 92, total: 100, subject: 'Mathematics', date: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString() },
+    { id: 'qr-3', studentId: 'student-1', studentName: 'Harshi', quizId: 'quiz-3', score: 78, total: 100, subject: 'Physics', date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() },
+    { id: 'qr-4', studentId: 'student-1', studentName: 'Harshi', quizId: 'quiz-5', score: 88, total: 100, subject: 'Chemistry', date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
     { id: 'qr-5', studentId: 'student-2', studentName: 'Priya Singh', quizId: 'quiz-1', score: 72, total: 100, subject: 'Physics', date: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString() },
     { id: 'qr-6', studentId: 'student-2', studentName: 'Priya Singh', quizId: 'quiz-5', score: 95, total: 100, subject: 'Chemistry', date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString() },
     { id: 'qr-7', studentId: 'student-3', studentName: 'Arjun Patel', quizId: 'quiz-2', score: 65, total: 100, subject: 'Mathematics', date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString() },
@@ -263,7 +263,7 @@ const defaultInitialState = {
     { id: 'qr-13', studentId: 'student-5', studentName: 'Vikram Joshi', quizId: 'quiz-5', score: 76, total: 100, subject: 'Chemistry', date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() }
   ],
   payments: [
-    { id: 'pay-1', studentId: 'student-1', studentName: 'Rahul Kumar', amount: 50000, status: 'completed', plan: 'Premium JEE', method: 'UPI', course: 'jee-advanced', paymentType: 'full', date: new Date(Date.now() - 80 * 24 * 60 * 60 * 1000).toISOString(), expiryDate: new Date(Date.now() + 285 * 24 * 60 * 60 * 1000).toISOString() },
+    { id: 'pay-1', studentId: 'student-1', studentName: 'Harshi', amount: 50000, status: 'completed', plan: 'Premium JEE', method: 'UPI', course: 'jee-advanced', paymentType: 'full', date: new Date(Date.now() - 80 * 24 * 60 * 60 * 1000).toISOString(), expiryDate: new Date(Date.now() + 285 * 24 * 60 * 60 * 1000).toISOString() },
     { id: 'pay-2', studentId: 'student-2', studentName: 'Priya Singh', amount: 10000, status: 'completed', plan: 'NEET EMI - Installment 1', method: 'Bank Transfer', course: 'neet-ug', paymentType: 'emi', date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), expiryDate: new Date(Date.now() + 335 * 24 * 60 * 60 * 1000).toISOString() },
     { id: 'pay-3', studentId: 'student-2', studentName: 'Priya Singh', amount: 10000, status: 'completed', plan: 'NEET EMI - Installment 2', method: 'Bank Transfer', course: 'neet-ug', paymentType: 'emi', date: new Date(Date.now() - 0 * 24 * 60 * 60 * 1000).toISOString(), expiryDate: new Date(Date.now() + 335 * 24 * 60 * 60 * 1000).toISOString() },
     { id: 'pay-4', studentId: 'student-3', studentName: 'Arjun Patel', amount: 5000, status: 'pending', plan: 'KCET Basic', method: 'UPI', course: 'kcet', paymentType: 'full', date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() },
@@ -273,7 +273,7 @@ const defaultInitialState = {
     { id: 'pay-8', studentId: 'student-3', studentName: 'Arjun Patel', amount: 2000, status: 'refunded', plan: 'KCET Trial', method: 'UPI', course: 'kcet', paymentType: 'full', date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString() }
   ],
   feeRecords: [
-    { id: 'fee-1', studentId: 'student-1', studentName: 'Rahul Kumar', total: 50000, paid: 50000, pending: 0, status: 'Paid in Full', course: 'jee-advanced' },
+    { id: 'fee-1', studentId: 'student-1', studentName: 'Harshi', total: 50000, paid: 50000, pending: 0, status: 'Paid in Full', course: 'jee-advanced' },
     { id: 'fee-2', studentId: 'student-2', studentName: 'Priya Singh', total: 60000, paid: 20000, pending: 40000, status: 'EMI Active', course: 'neet-ug' },
     { id: 'fee-3', studentId: 'student-3', studentName: 'Arjun Patel', total: 25000, paid: 0, pending: 25000, status: 'Awaiting First Payment', course: 'kcet' },
     { id: 'fee-4', studentId: 'student-4', studentName: 'Sneha Reddy', total: 35000, paid: 35000, pending: 0, status: 'Paid in Full', course: 'commerce' },
@@ -285,11 +285,11 @@ const defaultInitialState = {
     { id: 'ann-3', title: 'Faculty Meeting — Monday 10 AM', content: 'All faculty members are requested to attend the weekly review meeting. Agenda: Syllabus completion tracking.', date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), type: 'info', audience: 'faculty' }
   ],
   requests: [
-    { id: 'req-1', studentId: 'student-1', studentName: 'Rahul Kumar', type: 'leave', startDate: new Date().toISOString(), endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), reason: 'Attending a family function', status: 'pending', createdAt: new Date().toISOString() },
-    { id: 'req-2', studentId: 'student-1', studentName: 'Rahul Kumar', type: 'batch_change', targetBatch: 'jee-main-cet', reason: 'Want to focus on CET', status: 'approved', createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() }
+    { id: 'req-1', studentId: 'student-1', studentName: 'Harshi', type: 'leave', startDate: new Date().toISOString(), endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), reason: 'Attending a family function', status: 'pending', createdAt: new Date().toISOString() },
+    { id: 'req-2', studentId: 'student-1', studentName: 'Harshi', type: 'batch_change', targetBatch: 'jee-main-cet', reason: 'Want to focus on CET', status: 'approved', createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() }
   ],
   feedback: [
-    { id: 'fb-1', studentId: 'student-1', studentName: 'Rahul Kumar', teacherId: 'teacher-1', teacherName: 'Dr. Ramesh Babu', rating: 5, comment: 'Great teaching style, very clear explanations.', date: new Date().toISOString() },
+    { id: 'fb-1', studentId: 'student-1', studentName: 'Harshi', teacherId: 'teacher-1', teacherName: 'Dr. Ramesh Babu', rating: 5, comment: 'Great teaching style, very clear explanations.', date: new Date().toISOString() },
     { id: 'fb-2', studentId: 'student-4', studentName: 'Sneha Reddy', teacherId: 'teacher-3', teacherName: 'Mr. Anil Kumar', rating: 4, comment: 'Good examples, needs more practice problems.', date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() }
   ],
   enrollments: [
