@@ -52,6 +52,17 @@ export default function StudentDashboard() {
   const [doubtForm, setDoubtForm] = useState({ question: '', category: 'General', teacherId: '', refType: '', refId: '' });
   const [doubtSent, setDoubtSent] = useState(false);
   const [unlockingCourse, setUnlockingCourse] = useState(null);
+  const [resumeVideoIndex, setResumeVideoIndex] = useState(0);
+  const [doubtError, setDoubtError] = useState('');
+  const [gradeViewMode, setGradeViewMode] = useState('grid');
+  const [expandedAnnounceIds, setExpandedAnnounceIds] = useState({});
+  const [readAnnounceIds, setReadAnnounceIds] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('rvlh_read_announcements') || '[]');
+    } catch {
+      return [];
+    }
+  });
 
   const isRVLH    = user?.type === 'rvlh';
   const isPremium = isRVLH || user?.subscription === 'premium';
@@ -204,21 +215,50 @@ export default function StudentDashboard() {
                       <span>Resume Learning</span>
                     </div>
                     {videos.length > 0 ? (
-                      <div className="stu-resume-body">
-                        <div className="stu-resume-thumb">
-                          <img src={videos[0].thumbnail || `https://picsum.photos/seed/last/200/120`} alt="" />
-                          <button className="stu-resume-play" onClick={() => navigate(`/student/video/${videos[0].id}`)}>
-                            <Play size={16} fill="white" />
-                          </button>
-                        </div>
-                        <div className="stu-resume-info">
-                          <h4>{videos[0].title}</h4>
-                          <p>{videos[0].subject} · {CourseName(videos[0].courseId)}</p>
-                          <div className="stu-resume-progress-box">
-                            <div className="stu-resume-progress-bar"><div className="stu-resume-progress-fill" style={{ width: '45%' }} /></div>
-                            <span>45% completed</span>
-                          </div>
-                        </div>
+                      <div>
+                        {(() => {
+                          const activeVideo = videos[resumeVideoIndex % videos.length] || videos[0];
+                          const mockProgress = activeVideo.id === 'vid-1' ? 75 : activeVideo.id === 'vid-2' ? 30 : 45;
+                          return (
+                            <div className="stu-resume-body animate-fadeIn">
+                              <div className="stu-resume-thumb">
+                                <img src={activeVideo.thumbnail || `https://picsum.photos/seed/${activeVideo.id}/200/120`} alt="" />
+                                <button className="stu-resume-play" onClick={() => navigate(`/student/video/${activeVideo.id}`)}>
+                                  <Play size={16} fill="white" />
+                                </button>
+                              </div>
+                              <div className="stu-resume-info">
+                                <h4>{activeVideo.title}</h4>
+                                <p>{activeVideo.subject} · {CourseName(activeVideo.courseId)}</p>
+                                <div className="stu-resume-progress-box">
+                                  <div className="stu-resume-progress-bar"><div className="stu-resume-progress-fill" style={{ width: `${mockProgress}%` }} /></div>
+                                  <span>{mockProgress}% completed</span>
+                                </div>
+                                {videos.length > 1 && (
+                                  <div className="stu-resume-dots" style={{ display: 'flex', gap: '6px', marginTop: '12px' }}>
+                                    {videos.slice(0, 3).map((v, idx) => (
+                                      <button
+                                        key={v.id}
+                                        className={`stu-dot-btn ${resumeVideoIndex === idx ? 'active' : ''}`}
+                                        style={{
+                                          width: resumeVideoIndex === idx ? '18px' : '6px',
+                                          height: '6px',
+                                          borderRadius: '3px',
+                                          background: resumeVideoIndex === idx ? 'var(--primary-400)' : 'var(--text-tertiary)',
+                                          border: 'none',
+                                          cursor: 'pointer',
+                                          padding: 0,
+                                          transition: 'all 0.25s ease'
+                                        }}
+                                        onClick={() => setResumeVideoIndex(idx)}
+                                      />
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })()}
                       </div>
                     ) : (
                       <p className="stu-empty-note">Start your first lesson to see progress here!</p>
@@ -505,7 +545,13 @@ export default function StudentDashboard() {
             };
 
             const handleSubmitDoubt = () => {
-              if (!doubtForm.question.trim()) return;
+              const qText = doubtForm.question.trim();
+              if (!qText) return;
+              if (qText.length < 15) {
+                setDoubtError('Your question must be at least 15 characters long to describe the doubt clearly.');
+                return;
+              }
+              setDoubtError('');
               const targetTeacher = doubtForm.teacherId || teachers[0]?.id || '';
               addEntity('doubts', {
                 studentId: user?.id, studentName: user?.name,
@@ -539,11 +585,21 @@ export default function StudentDashboard() {
                     <div className="doubt-success-toast"><CheckCircle size={16} /><span><strong>Doubt submitted!</strong> Your teacher will reply soon. Check back here for the response.</span></div>
                   )}
 
+                  {doubtError && (
+                    <div className="doubt-error-banner" style={{ background: 'rgba(239,68,68,0.08)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '10px 14px', borderRadius: '10px', marginBottom: '14px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <AlertCircle size={14} /> <span>{doubtError}</span>
+                    </div>
+                  )}
+
                   <div className="doubt-form-body">
                     <label className="doubt-field-label">Your Question</label>
                     <textarea className="doubt-input-area"
                       placeholder={'E.g., "In the Laws of Motion video at 15:30, I didn\'t understand the derivation of F=ma for variable mass systems. Can you explain step by step?"'}
-                      value={doubtForm.question} onChange={e => setDoubtForm(p => ({ ...p, question: e.target.value }))} rows={4} />
+                      value={doubtForm.question} onChange={e => { setDoubtForm(p => ({ ...p, question: e.target.value })); if(e.target.value.length >= 15) setDoubtError(''); }} rows={4} maxLength={500} />
+                    
+                    <span className="char-counter" style={{ fontSize: '10px', color: 'var(--text-tertiary)', alignSelf: 'flex-end', marginTop: '-8px', marginBottom: '12px' }}>
+                      {doubtForm.question.length} / 500 characters
+                    </span>
 
                     <div className="doubt-options-grid">
                       <div className="doubt-field">
@@ -586,6 +642,24 @@ export default function StudentDashboard() {
                         </div>
                       )}
                     </div>
+
+                    {doubtForm.question.trim().length > 0 && (
+                      <div className="doubt-preview-box" style={{ background: 'rgba(255,255,255,0.02)', border: '1px dashed var(--border-light)', borderRadius: '12px', padding: '16px', marginTop: '16px', marginBottom: '16px' }}>
+                        <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--primary-400)', textTransform: 'uppercase', tracking: '1px', display: 'block', marginBottom: '8px' }}>Live Preview</span>
+                        <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                          <div style={{ width: '32px', height: '32px', borderRadius: '50%', overflow: 'hidden', border: '1px solid var(--border-light)', background: 'var(--surface-elevated)' }}>
+                            <img src={user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          </div>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '6px' }}>
+                              <strong style={{ fontSize: '13px', color: 'var(--text-primary)' }}>{user?.name || 'You'}</strong>
+                              <span style={{ fontSize: '10px', background: 'rgba(34,211,238,0.12)', color: 'var(--primary-400)', padding: '1px 6px', borderRadius: '4px', fontWeight: 600 }}>{doubtForm.category}</span>
+                            </div>
+                            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0, whiteSpace: 'pre-wrap' }}>{doubtForm.question}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     <button className="doubt-submit-btn" onClick={handleSubmitDoubt} disabled={!doubtForm.question.trim()}>
                       <Send size={16} /> Send My Doubt
@@ -773,29 +847,60 @@ export default function StudentDashboard() {
           {/* ── ANNOUNCEMENTS ── */}
           {activeTab === 'announcements' && (
             <div className="stu-ann-list">
-              {announcements.map(ann => (
-                <div key={ann.id} className={`stu-ann-card ${ann.type === 'warning' ? 'urgent' : ''}`}>
-                  <div className="stu-ann-line" />
-                  <div className="stu-ann-icon">
-                    {ann.type === 'warning' ? <AlertCircle size={20}/> : <Info size={20}/>}
-                  </div>
-                  <div className="stu-ann-body">
-                    <div className="stu-ann-meta">
-                      <span className={`ann-pill ${ann.type === 'warning' ? 'urgent' : 'info'}`}>
-                        {ann.type === 'warning' ? '⚠ Important' : 'ℹ Notice'}
-                      </span>
-                      <span className="stu-ann-date">
-                        {new Date(ann.date).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' })}
-                      </span>
+              {announcements.map(ann => {
+                const isRead = readAnnounceIds.includes(ann.id);
+                const isExpanded = !!expandedAnnounceIds[ann.id];
+                
+                const handleAnnounceClick = () => {
+                  setExpandedAnnounceIds(prev => ({ ...prev, [ann.id]: !prev[ann.id] }));
+                  if (!isRead) {
+                    const nextRead = [...readAnnounceIds, ann.id];
+                    setReadAnnounceIds(nextRead);
+                    localStorage.setItem('rvlh_read_announcements', JSON.stringify(nextRead));
+                  }
+                };
+
+                return (
+                  <div
+                    key={ann.id}
+                    className={`stu-ann-card ${ann.type === 'warning' ? 'urgent' : ''} ${isRead ? 'read' : 'unread'}`}
+                    style={{ cursor: 'pointer', transition: 'all 0.2s ease', opacity: isRead ? 0.7 : 1 }}
+                    onClick={handleAnnounceClick}
+                  >
+                    <div className="stu-ann-line" />
+                    <div className="stu-ann-icon">
+                      {ann.type === 'warning' ? <AlertCircle size={20}/> : <Info size={20}/>}
                     </div>
-                    <h3 className="stu-ann-title">{ann.title}</h3>
-                    <p className="stu-ann-content">{ann.content}</p>
-                    {ann.targetAudience && (
-                      <span className="stu-ann-audience">📢 {ann.targetAudience === 'both' ? 'All Students & Faculty' : ann.targetAudience}</span>
-                    )}
+                    <div className="stu-ann-body">
+                      <div className="stu-ann-meta" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                          <span className={`ann-pill ${ann.type === 'warning' ? 'urgent' : 'info'}`}>
+                            {ann.type === 'warning' ? '⚠ Important' : 'ℹ Notice'}
+                          </span>
+                          {!isRead && <span className="tag-new-pulse" style={{ background: 'var(--primary-400)', color: '#fff', fontSize: '9px', fontWeight: 800, padding: '1px 5px', borderRadius: '4px' }}>NEW</span>}
+                        </div>
+                        <span className="stu-ann-date">
+                          {new Date(ann.date).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' })}
+                        </span>
+                      </div>
+                      <h3 className="stu-ann-title" style={{ marginTop: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span>{ann.title}</span>
+                        <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 'normal' }}>{isExpanded ? 'Click to collapse' : 'Click to read'}</span>
+                      </h3>
+                      
+                      {isExpanded ? (
+                        <p className="stu-ann-content animate-fadeIn" style={{ whiteSpace: 'pre-wrap', marginTop: '8px' }}>{ann.content}</p>
+                      ) : (
+                        <p className="stu-ann-content" style={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', marginTop: '8px' }}>{ann.content}</p>
+                      )}
+
+                      {ann.targetAudience && (
+                        <span className="stu-ann-audience" style={{ display: 'block', marginTop: '8px' }}>📢 {ann.targetAudience === 'both' ? 'All Students & Faculty' : ann.targetAudience}</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               {announcements.length === 0 && (
                 <div className="stu-empty-state">
                   <Bell size={48} />
@@ -836,56 +941,75 @@ export default function StudentDashboard() {
               {/* Subject cards */}
               {subjectGrades.length > 0 ? (
                 <>
-                  <h3 className="stu-section-label" style={{ marginTop: '28px' }}>📊 Subject-wise Marks</h3>
-                  <div className="stu-subject-grid">
-                    {subjectGrades.map(sg => (
-                      <div key={sg.subject} className="stu-subject-card">
-                        <div className="stu-sub-top">
-                          <span className="pill-subject">{sg.subject}</span>
-                          <span className="stu-sub-grade" style={{ color: GradeColor(sg.grade) }}>{sg.grade}</span>
-                        </div>
-                        <div className="stu-sub-marks">
-                          <span className="stu-sub-scored" style={{ color: GradeColor(sg.grade) }}>{sg.marks}</span>
-                          <span className="stu-sub-sep">/</span>
-                          <span className="stu-sub-total">{sg.total}</span>
-                          <span className="stu-sub-label">marks</span>
-                        </div>
-                        <div className="stu-sub-avg">{sg.avg}% · {sg.count} quiz{sg.count !== 1 ? 'zes' : ''}</div>
-                        <div className="stu-sub-bar">
-                          <div className="stu-sub-fill" style={{ width:`${sg.avg}%`, background: GradeColor(sg.grade) }} />
-                        </div>
-                      </div>
-                    ))}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '28px', marginBottom: '16px' }}>
+                    <h3 className="stu-section-label" style={{ margin: 0 }}>📊 Performance Reports</h3>
+                    <div className="view-mode-toggles" style={{ display: 'flex', gap: '8px' }}>
+                      <button
+                        className={`btn btn-sm ${gradeViewMode === 'grid' ? 'btn-primary' : 'btn-secondary'}`}
+                        style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                        onClick={() => setGradeViewMode('grid')}
+                      >
+                        <Award size={13} /> Subject Analytics
+                      </button>
+                      <button
+                        className={`btn btn-sm ${gradeViewMode === 'table' ? 'btn-primary' : 'btn-secondary'}`}
+                        style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                        onClick={() => setGradeViewMode('table')}
+                      >
+                        <ClipboardList size={13} /> Detailed History
+                      </button>
+                    </div>
                   </div>
 
-                  {/* History table */}
-                  <h3 className="stu-section-label" style={{ marginTop: '28px' }}>📋 Quiz History</h3>
-                  <div className="stu-table-wrap">
-                    <table className="elite-table">
-                      <thead>
-                        <tr><th>Quiz / Video</th><th>Subject</th><th>Score</th><th>Marks</th><th>Grade</th><th>Date</th></tr>
-                      </thead>
-                      <tbody>
-                        {[...myResults].reverse().map((r,i) => {
-                          const q = (data?.quizzes||[]).find(x=>x.id===r.quizId);
-                          const v = (data?.videos ||[]).find(x=>x.id===r.videoId);
-                          const g = r.score>=90?'A+':r.score>=80?'A':r.score>=70?'B':r.score>=60?'C':'D';
-                          return (
-                            <tr key={i}>
-                              <td><strong>{q?.title||v?.title||'AI Quiz'}</strong></td>
-                              <td>{r.subject ? <span className="pill-subject">{r.subject}</span> : '—'}</td>
-                              <td style={{ color:'var(--primary-400)', fontWeight:700 }}>{r.score}%</td>
-                              <td style={{ fontFamily:'monospace', fontSize:'12px' }}>{r.score}/100</td>
-                              <td><span className="stu-sub-grade" style={{ color: GradeColor(g) }}>{g}</span></td>
-                              <td style={{ fontSize:'12px', color:'var(--text-tertiary)' }}>
-                                {r.createdAt ? new Date(r.createdAt).toLocaleDateString('en-IN') : '—'}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
+                  {gradeViewMode === 'grid' ? (
+                    <div className="stu-subject-grid animate-slideUp">
+                      {subjectGrades.map(sg => (
+                        <div key={sg.subject} className="stu-subject-card">
+                          <div className="stu-sub-top">
+                            <span className="pill-subject">{sg.subject}</span>
+                            <span className="stu-sub-grade" style={{ color: GradeColor(sg.grade) }}>{sg.grade}</span>
+                          </div>
+                          <div className="stu-sub-marks">
+                            <span className="stu-sub-scored" style={{ color: GradeColor(sg.grade) }}>{sg.marks}</span>
+                            <span className="stu-sub-sep">/</span>
+                            <span className="stu-sub-total">{sg.total}</span>
+                            <span className="stu-sub-label">marks</span>
+                          </div>
+                          <div className="stu-sub-avg">{sg.avg}% · {sg.count} quiz{sg.count !== 1 ? 'zes' : ''}</div>
+                          <div className="stu-sub-bar">
+                            <div className="stu-sub-fill" style={{ width:`${sg.avg}%`, background: GradeColor(sg.grade) }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="stu-table-wrap animate-slideUp">
+                      <table className="elite-table">
+                        <thead>
+                          <tr><th>Quiz / Video</th><th>Subject</th><th>Score</th><th>Marks</th><th>Grade</th><th>Date</th></tr>
+                        </thead>
+                        <tbody>
+                          {[...myResults].reverse().map((r,i) => {
+                            const q = (data?.quizzes||[]).find(x=>x.id===r.quizId);
+                            const v = (data?.videos ||[]).find(x=>x.id===r.videoId);
+                            const g = r.score>=90?'A+':r.score>=80?'A':r.score>=70?'B':r.score>=60?'C':'D';
+                            return (
+                              <tr key={i}>
+                                <td><strong>{q?.title||v?.title||'AI Quiz'}</strong></td>
+                                <td>{r.subject ? <span className="pill-subject">{r.subject}</span> : '—'}</td>
+                                <td style={{ color:'var(--primary-400)', fontWeight:700 }}>{r.score}%</td>
+                                <td style={{ fontFamily:'monospace', fontSize:'12px' }}>{r.score}/100</td>
+                                <td><span className="stu-sub-grade" style={{ color: GradeColor(g) }}>{g}</span></td>
+                                <td style={{ fontSize:'12px', color:'var(--text-tertiary)' }}>
+                                  {r.createdAt ? new Date(r.createdAt).toLocaleDateString('en-IN') : '—'}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </>
               ) : (
                 <div className="stu-empty-state" style={{ marginTop: '40px' }}>

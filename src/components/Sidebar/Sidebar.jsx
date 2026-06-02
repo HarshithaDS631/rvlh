@@ -58,7 +58,17 @@ const studentLinks = [
 export default function Sidebar({ isOpen, onClose }) {
   const { user, logout } = useAuth();
   const { data } = useStore();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    return localStorage.getItem('rvlh_sidebar_collapsed') === 'true';
+  });
+
+  const handleToggleCollapse = () => {
+    setCollapsed(prev => {
+      const next = !prev;
+      localStorage.setItem('rvlh_sidebar_collapsed', String(next));
+      return next;
+    });
+  };
 
   if (!user) return null;
 
@@ -177,7 +187,7 @@ export default function Sidebar({ isOpen, onClose }) {
           </button>
           <button
             className="sidebar-toggle"
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={handleToggleCollapse}
             id="sidebar-toggle"
             aria-label="Toggle sidebar"
           >
@@ -216,7 +226,7 @@ export default function Sidebar({ isOpen, onClose }) {
           </button>
           <button
             className="sidebar-toggle"
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={handleToggleCollapse}
             id="sidebar-toggle"
             aria-label="Toggle sidebar"
           >

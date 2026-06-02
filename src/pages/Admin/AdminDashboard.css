@@ -1702,3 +1702,24 @@
     font-size: 12px;
   }
 }
+
+/* Premium styles for Admin search boxes and preview overlay decline */
+.search-bar-wrap input:focus {
+  outline: none;
+}
+.paid-complete {
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  box-shadow: 0 4px 20px -6px rgba(16, 185, 129, 0.15) !important;
+}
+.f-value.neon-text {
+  color: #10b981;
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
+.search-bar-wrap {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-bar-wrap:focus-within {
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+

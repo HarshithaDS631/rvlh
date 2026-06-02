@@ -238,8 +238,13 @@
 }
 
 .sidebar-link:hover {
-  background: var(--gray-50);
-  color: var(--text-primary);
+  background: rgba(34, 211, 238, 0.04);
+  color: #fff;
+  transform: translateX(4px);
+}
+
+.sidebar-collapsed .sidebar-link:hover {
+  transform: none;
 }
 
 .sidebar-link-active {

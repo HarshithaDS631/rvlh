@@ -45,6 +45,11 @@ export default function AdminDashboard() {
   const [approvalTypeFilter, setApprovalTypeFilter] = useState('all');
   const [approvalSubjectFilter, setApprovalSubjectFilter] = useState('all');
   const [previewItem, setPreviewItem] = useState(null);
+  const [facultySearch, setFacultySearch] = useState('');
+  const [studentSearch, setStudentSearch] = useState('');
+  const [financialSearch, setFinancialSearch] = useState('');
+  const [rejectionFeedback, setRejectionFeedback] = useState('');
+  const [showRejectionForm, setShowRejectionForm] = useState(false);
   const [profileData, setProfileData] = useState({
     name: user?.name || 'Super Admin',
     email: user?.email || 'admin@rvlh.edu',
@@ -71,8 +76,28 @@ export default function AdminDashboard() {
   const unreadCount = adminNotifications.filter(n => !n.read).length;
 
   // — Filtered Data —
-  const filteredTeachers = facultySubjectFilter === 'all' ? teachers : teachers.filter(t => t.subject === facultySubjectFilter);
-  const filteredStudents = studentCourseFilter === 'all' ? students : students.filter(s => s.course === studentCourseFilter);
+  const filteredTeachers = useMemo(() => {
+    return teachers.filter(t => {
+      const subjectMatch = facultySubjectFilter === 'all' || t.subject === facultySubjectFilter;
+      const searchMatch = !facultySearch || 
+        t.name.toLowerCase().includes(facultySearch.toLowerCase()) || 
+        t.email.toLowerCase().includes(facultySearch.toLowerCase()) ||
+        (t.subject && t.subject.toLowerCase().includes(facultySearch.toLowerCase()));
+      return subjectMatch && searchMatch;
+    });
+  }, [teachers, facultySubjectFilter, facultySearch]);
+
+  const filteredStudents = useMemo(() => {
+    return students.filter(s => {
+      const courseMatch = studentCourseFilter === 'all' || s.course === studentCourseFilter;
+      const searchMatch = !studentSearch || 
+        s.name.toLowerCase().includes(studentSearch.toLowerCase()) || 
+        s.email.toLowerCase().includes(studentSearch.toLowerCase()) ||
+        (s.studentId && s.studentId.toLowerCase().includes(studentSearch.toLowerCase()));
+      return courseMatch && searchMatch;
+    });
+  }, [students, studentCourseFilter, studentSearch]);
+
   const filteredResults = resultSubjectFilter === 'all' ? (data?.quizResults || []) : (data?.quizResults || []).filter(r => r.subject === resultSubjectFilter);
 
   const allLibraryItems = useMemo(() => {
@@ -90,8 +115,27 @@ export default function AdminDashboard() {
     });
   }, [allLibraryItems, libTypeFilter, libSubjectFilter]);
 
-  const filteredPayments = paymentCourseFilter === 'all' ? (data?.payments || []) : (data?.payments || []).filter(p => p.course === paymentCourseFilter);
-  const filteredFees = paymentCourseFilter === 'all' ? (data?.feeRecords || []) : (data?.feeRecords || []).filter(f => f.course === paymentCourseFilter);
+  const filteredPayments = useMemo(() => {
+    const base = paymentCourseFilter === 'all' ? (data?.payments || []) : (data?.payments || []).filter(p => p.course === paymentCourseFilter);
+    return base.filter(p => {
+      const sMatch = !financialSearch || 
+        p.studentName.toLowerCase().includes(financialSearch.toLowerCase()) || 
+        p.plan.toLowerCase().includes(financialSearch.toLowerCase()) ||
+        p.method.toLowerCase().includes(financialSearch.toLowerCase());
+      return sMatch;
+    });
+  }, [data?.payments, paymentCourseFilter, financialSearch]);
+
+  const filteredFees = useMemo(() => {
+    const base = paymentCourseFilter === 'all' ? (data?.feeRecords || []) : (data?.feeRecords || []).filter(f => f.course === paymentCourseFilter);
+    return base.filter(f => {
+      const sMatch = !financialSearch || 
+        f.studentName.toLowerCase().includes(financialSearch.toLowerCase()) || 
+        (f.studentId && f.studentId.toLowerCase().includes(financialSearch.toLowerCase())) ||
+        f.course.toLowerCase().includes(financialSearch.toLowerCase());
+      return sMatch;
+    });
+  }, [data?.feeRecords, paymentCourseFilter, financialSearch]);
 
   // — Computed Stats —
   const avgPercentage = filteredResults.length > 0
@@ -392,7 +436,17 @@ export default function AdminDashboard() {
           <section className="section-card animate-slideUp">
             <div className="card-header">
               <h3>Faculty Management</h3>
-              <div className="header-actions">
+              <div className="header-actions" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                <div className="search-bar-wrap" style={{ display: 'flex', alignItems: 'center', background: 'var(--surface-bg)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '0 12px' }}>
+                  <Search size={14} color="var(--text-tertiary)" />
+                  <input 
+                    className="form-input" 
+                    style={{ border: 'none', background: 'transparent', boxShadow: 'none', padding: '6px', fontSize: '13px', width: '200px' }}
+                    placeholder="Search faculty..." 
+                    value={facultySearch}
+                    onChange={e => setFacultySearch(e.target.value)}
+                  />
+                </div>
                 <div className="filter-dropdown">
                   <Filter size={14} />
                   <select className="form-select" style={{ maxWidth: '200px' }} value={facultySubjectFilter} onChange={e => setFacultySubjectFilter(e.target.value)}>
@@ -457,7 +511,17 @@ export default function AdminDashboard() {
           <section className="section-card animate-slideUp">
             <div className="card-header">
               <h3>Student Registry</h3>
-              <div className="header-actions">
+              <div className="header-actions" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                <div className="search-bar-wrap" style={{ display: 'flex', alignItems: 'center', background: 'var(--surface-bg)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '0 12px' }}>
+                  <Search size={14} color="var(--text-tertiary)" />
+                  <input 
+                    className="form-input" 
+                    style={{ border: 'none', background: 'transparent', boxShadow: 'none', padding: '6px', fontSize: '13px', width: '200px' }}
+                    placeholder="Search students..." 
+                    value={studentSearch}
+                    onChange={e => setStudentSearch(e.target.value)}
+                  />
+                </div>
                 <div className="filter-dropdown">
                   <Filter size={14} />
                   <select className="form-select" style={{ maxWidth: '200px' }} value={studentCourseFilter} onChange={e => setStudentCourseFilter(e.target.value)}>
@@ -573,7 +637,10 @@ export default function AdminDashboard() {
                       <button className="elite-btn-primary" style={{ padding: '6px 12px', borderRadius: '8px' }} onClick={() => handleApprove(item)}>
                         <CheckCircle size={16} />
                       </button>
-                      <button className="elite-btn-secondary" style={{ padding: '6px 12px', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', borderColor: 'rgba(239, 68, 68, 0.2)' }} onClick={() => handleDecline(item)}>
+                      <button className="elite-btn-secondary" style={{ padding: '6px 12px', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', borderColor: 'rgba(239, 68, 68, 0.2)' }} onClick={() => {
+                        setPreviewItem(item);
+                        setShowRejectionForm(true);
+                      }}>
                         <X size={16} />
                       </button>
                     </div>
@@ -828,7 +895,17 @@ export default function AdminDashboard() {
                 <h3 style={{ fontSize: '24px', fontWeight: 800, margin: 0 }}>Financial Ecosystem</h3>
                 <span className="terminal-readout">STATUS: ONLINE</span>
               </div>
-              <div className="header-actions">
+              <div className="header-actions" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                <div className="search-bar-wrap" style={{ display: 'flex', alignItems: 'center', background: 'var(--surface-bg)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '0 12px' }}>
+                  <Search size={14} color="var(--text-tertiary)" />
+                  <input 
+                    className="form-input" 
+                    style={{ border: 'none', background: 'transparent', boxShadow: 'none', padding: '6px', fontSize: '13px', width: '200px' }}
+                    placeholder="Search payments/students..." 
+                    value={financialSearch}
+                    onChange={e => setFinancialSearch(e.target.value)}
+                  />
+                </div>
                 <div className="filter-dropdown">
                   <Filter size={14} />
                   <select className="form-select" style={{ maxWidth: '200px' }} value={paymentCourseFilter} onChange={e => setPaymentCourseFilter(e.target.value)}>
@@ -869,9 +946,28 @@ export default function AdminDashboard() {
                         <span className={`elite-status ${isPaidFull ? 'active' : 'pending'}`} style={{ fontSize: '11px' }}>
                           {isPaidFull ? 'NODE.PAID' : `DUE: ₹${f.pending.toLocaleString()}`}
                         </span>
-                        <button className="preview-trigger-btn" onClick={() => alert('EMI Plan & Receipt generation feature coming soon.')}>
-                          <ClipboardList size={14} /> Manage
-                        </button>
+                        {!isPaidFull ? (
+                          <button 
+                            className="elite-btn-primary" 
+                            style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '11px', whiteSpace: 'nowrap' }} 
+                            onClick={() => {
+                              const sId = f.studentId || (data?.users || []).find(u => u.name === f.studentName)?.id;
+                              addEntity('notifications', {
+                                userId: sId,
+                                title: 'Fee Reminder 💸',
+                                message: `Your pending fee amount of ₹${f.pending.toLocaleString()} is due. Please complete the payment at the earliest.`,
+                                category: 'today'
+                              });
+                              alert(`Fee payment reminder sent to ${f.studentName}.`);
+                            }}
+                          >
+                            Send Reminder
+                          </button>
+                        ) : (
+                          <button className="preview-trigger-btn" onClick={() => alert('EMI Plan & Receipt generation feature coming soon.')}>
+                            <ClipboardList size={14} /> Manage
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1066,41 +1162,106 @@ export default function AdminDashboard() {
       )}
 
       {/* Preview Modal */}
+      {/* Preview Modal */}
       {previewItem && (
-        <div className="elite-modal-overlay" onClick={() => setPreviewItem(null)}>
-          <div className="elite-modal preview-modal" onClick={e => e.stopPropagation()}>
+        <div className="elite-modal-overlay" onClick={() => { setPreviewItem(null); setShowRejectionForm(false); setRejectionFeedback(''); }}>
+          <div className="elite-modal preview-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: '640px' }}>
             <div className="modal-top">
-              <div className="preview-header-row">
-                <h3>{previewItem.title}</h3>
-                <button className="tool-btn" onClick={() => setPreviewItem(null)}><X size={20} /></button>
+              <div className="preview-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ margin: 0 }}>{previewItem.title}</h3>
+                <button type="button" className="tool-btn" onClick={() => { setPreviewItem(null); setShowRejectionForm(false); setRejectionFeedback(''); }}><X size={20} /></button>
               </div>
-              <p>By {previewItem.teacherName || (data?.users || []).find(u => u.id === previewItem.teacherId)?.name || 'Unknown'} • {previewItem.subject}</p>
+              <p style={{ margin: '8px 0 0 0', color: 'var(--text-secondary)', fontSize: '13px' }}>
+                By {previewItem.teacherName || (data?.users || []).find(u => u.id === previewItem.teacherId)?.name || 'Unknown'} • {previewItem.subject}
+              </p>
             </div>
-            <div className="preview-body">
-              {(previewItem.type === 'video' || previewItem.itemType === 'video') ? (
-                <div className="preview-video-wrap">
-                  {previewItem.url && previewItem.url.includes('youtube') ? (
-                    <iframe src={previewItem.url} title={previewItem.title} allowFullScreen className="preview-iframe"></iframe>
+            
+            <div className="preview-body" style={{ marginTop: '16px' }}>
+              {!showRejectionForm ? (
+                <>
+                  {(previewItem.type === 'video' || previewItem.itemType === 'video') ? (
+                    <div className="preview-video-wrap" style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '8px', background: '#000' }}>
+                      {previewItem.url && previewItem.url.includes('youtube') ? (
+                        <iframe src={previewItem.url} title={previewItem.title} allowFullScreen className="preview-iframe" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}></iframe>
+                      ) : (
+                        <div className="preview-placeholder" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+                          <Video size={48} />
+                          <p style={{ margin: '8px 0 0 0' }}>Video Preview</p>
+                          <span className="preview-url" style={{ fontSize: '11px', opacity: 0.7 }}>{previewItem.url || 'No URL provided'}</span>
+                        </div>
+                      )}
+                    </div>
                   ) : (
-                    <div className="preview-placeholder">
-                      <Video size={48} />
-                      <p>Video Preview</p>
-                      <span className="preview-url">{previewItem.url || 'No URL provided'}</span>
-                      {previewItem.duration && <span className="preview-duration">Duration: {previewItem.duration}</span>}
+                    <div className="preview-material-wrap" style={{ padding: '40px', background: 'var(--gray-900)', borderRadius: '8px', border: '1px solid var(--border-light)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+                      <FileText size={48} className="neon-text" />
+                      <p className="preview-mat-title" style={{ fontWeight: 'bold', margin: 0 }}>{previewItem.title}</p>
+                      <span className="preview-file-type" style={{ fontSize: '12px', background: 'var(--surface-elevated)', padding: '4px 10px', borderRadius: '4px' }}>{previewItem.fileType || 'Document'}</span>
+                      {previewItem.url && previewItem.url !== '#' && <a href={previewItem.url} target="_blank" rel="noopener noreferrer" className="preview-link" style={{ color: 'var(--primary-400)', fontWeight: 600, textDecoration: 'underline' }}>Open Document</a>}
+                    </div>
+                  )}
+                </>
+              ) : null}
+
+              {/* Decline Feedback Form inside modal */}
+              {previewItem.status === 'pending' && (
+                <div className="preview-actions-panel" style={{ marginTop: '20px', padding: '16px', background: 'var(--gray-900)', borderRadius: '12px', border: '1px solid var(--border-light)' }}>
+                  {!showRejectionForm ? (
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                      <button type="button" className="elite-btn-primary" style={{ flex: 1 }} onClick={() => {
+                        handleApprove(previewItem);
+                        setPreviewItem(null);
+                      }}>
+                        <CheckCircle size={16} /> Approve & Publish
+                      </button>
+                      <button type="button" className="btn btn-secondary" style={{ flex: 1, background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', borderColor: 'rgba(239, 68, 68, 0.2)' }} onClick={() => setShowRejectionForm(true)}>
+                        <X size={16} /> Decline with Feedback
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="animate-fadeIn">
+                      <label className="form-label" style={{ color: 'var(--error-400)', fontWeight: 600, display: 'block', marginBottom: '8px' }}>Decline Reason / Feedback</label>
+                      <textarea 
+                        className="form-input" 
+                        rows="3" 
+                        placeholder="e.g. Video resolution is low / contains inappropriate language / duplicate content..." 
+                        value={rejectionFeedback} 
+                        onChange={e => setRejectionFeedback(e.target.value)} 
+                        style={{ width: '100%', marginBottom: '12px', background: 'var(--surface-bg)' }}
+                      />
+                      <div style={{ display: 'flex', gap: '12px' }}>
+                        <button type="button" className="elite-btn-primary" style={{ flex: 1, background: 'var(--error)', borderColor: 'var(--error)' }} onClick={() => {
+                          if (!rejectionFeedback.trim()) {
+                            alert('Please provide a reason for declining.');
+                            return;
+                          }
+                          const itemType = (previewItem.type === 'video' || previewItem.itemType === 'video') ? 'videos' : 'materials';
+                          updateEntity(itemType, previewItem.id, { status: 'declined' });
+                          addEntity('notifications', {
+                            userId: previewItem.teacherId,
+                            title: 'Content Declined ❌',
+                            message: `Your ${previewItem.type || previewItem.itemType}: "${previewItem.title}" was declined. Reason: ${rejectionFeedback}`,
+                            category: 'today',
+                          });
+                          setRejectionFeedback('');
+                          setShowRejectionForm(false);
+                          setPreviewItem(null);
+                        }}>
+                          Submit Rejection
+                        </button>
+                        <button type="button" className="btn btn-ghost" style={{ flex: 1 }} onClick={() => setShowRejectionForm(false)}>
+                          Cancel
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
-              ) : (
-                <div className="preview-material-wrap">
-                  <FileText size={48} />
-                  <p className="preview-mat-title">{previewItem.title}</p>
-                  <span className="preview-file-type">{previewItem.fileType || 'Document'}</span>
-                  {previewItem.url && previewItem.url !== '#' && <a href={previewItem.url} target="_blank" rel="noopener noreferrer" className="preview-link">Open Document</a>}
-                </div>
               )}
             </div>
-            <div className="preview-info-row">
-              <span className={`meta-tag ${previewItem.type || previewItem.itemType}`}>{previewItem.type || previewItem.itemType}</span>
+
+            <div className="preview-info-row" style={{ marginTop: '16px', display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-tertiary)' }}>
+              <span className={`meta-tag ${previewItem.type || previewItem.itemType}`} style={{ background: 'var(--surface-elevated)', padding: '2px 8px', borderRadius: '4px' }}>
+                {(previewItem.type || previewItem.itemType).toUpperCase()}
+              </span>
               <span className="preview-date">Uploaded: {formatDate(previewItem.createdAt)}</span>
             </div>
           </div>

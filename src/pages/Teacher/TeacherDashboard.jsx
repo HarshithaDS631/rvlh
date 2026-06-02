@@ -34,6 +34,7 @@ export default function TeacherDashboard() {
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showTestModal, setShowTestModal] = useState(false);
   const [showAnnounceModal, setShowAnnounceModal] = useState(false);
+  const [selectedStudentMonitor, setSelectedStudentMonitor] = useState(null);
   
   // LIVE SESSION STATE
   const [isInLiveSession, setIsInLiveSession] = useState(false);
@@ -399,12 +400,22 @@ export default function TeacherDashboard() {
                   <span className="dash-stat-value">{approvedVideos.length}</span>
                   <span className="dash-stat-label">Approved Videos</span>
                 </div>
+                <div className="dash-stat-tooltip">
+                  <strong>Syllabus Coverage:</strong>
+                  <p>Syllabus: 64% Completed</p>
+                  <p>Pending Review: {pendingVideos.length} uploads</p>
+                </div>
               </div>
               <div className="dash-stat-card" style={{ '--stat-color': '#10b981' }}>
                 <div className="dash-stat-icon"><FileText size={22} /></div>
                 <div className="dash-stat-info">
                   <span className="dash-stat-value">{approvedMaterials.length}</span>
                   <span className="dash-stat-label">Approved Materials</span>
+                </div>
+                <div className="dash-stat-tooltip">
+                  <strong>Resource Hub Status:</strong>
+                  <p>Approved sheets: {approvedMaterials.length}</p>
+                  <p>Awaiting Admin: {pendingMaterials.length}</p>
                 </div>
               </div>
               <div className="dash-stat-card" style={{ '--stat-color': '#f59e0b' }}>
@@ -413,12 +424,22 @@ export default function TeacherDashboard() {
                   <span className="dash-stat-value">{teacherDoubts.filter(d => d.status === 'pending').length}</span>
                   <span className="dash-stat-label">Pending Doubts</span>
                 </div>
+                <div className="dash-stat-tooltip">
+                  <strong>Academic Doubts:</strong>
+                  <p>Pending response: {teacherDoubts.filter(d => d.status === 'pending').length}</p>
+                  <p>Resolved by you: {teacherDoubts.filter(d => d.status === 'resolved').length}</p>
+                </div>
               </div>
               <div className="dash-stat-card" style={{ '--stat-color': '#8b5cf6' }}>
                 <div className="dash-stat-icon"><TrendingUp size={22} /></div>
                 <div className="dash-stat-info">
                   <span className="dash-stat-value">{totalAvg}%</span>
                   <span className="dash-stat-label">Class Average Score</span>
+                </div>
+                <div className="dash-stat-tooltip">
+                  <strong>Rating Breakdown:</strong>
+                  <p>Average Performance: {totalAvg}%</p>
+                  <p>Total tests: {data?.quizzes?.filter(q => q.subject === user.subject).length || 0}</p>
                 </div>
               </div>
             </div>
@@ -664,7 +685,7 @@ export default function TeacherDashboard() {
                   </thead>
                   <tbody>
                     {quizResults.map(r => (
-                      <tr key={r.id}>
+                      <tr key={r.id} onClick={() => setSelectedStudentMonitor(r)} style={{ cursor: 'pointer' }} className="monitor-row">
                          <td style={{ fontWeight: 700 }}>{r.studentName}</td>
                          <td>{data?.quizzes?.find(q => q.id === r.quizId)?.title || r.quizId}</td>
                          <td>{r.score}%</td>
@@ -674,6 +695,98 @@ export default function TeacherDashboard() {
                     ))}
                   </tbody>
                </table>
+
+               {/* Slide-out Student Monitor Detail Drawer */}
+               {selectedStudentMonitor && (() => {
+                 const student = (data?.users || []).find(
+                   u => u.name === selectedStudentMonitor.studentName || u.id === selectedStudentMonitor.studentId
+                 );
+                 const courseName = data?.courses?.find(c => c.id === student?.course)?.name || student?.course || 'General';
+                 const studentQuizzes = (data?.quizResults || []).filter(
+                   qr => qr.studentName === selectedStudentMonitor.studentName || qr.studentId === selectedStudentMonitor.studentId
+                 );
+                 const studentAvg = studentQuizzes.length > 0
+                   ? Math.round(studentQuizzes.reduce((sum, q) => sum + q.score, 0) / studentQuizzes.length)
+                   : 0;
+
+                 return (
+                   <div className="student-monitor-drawer-overlay active" onClick={() => setSelectedStudentMonitor(null)}>
+                     <div className="student-monitor-drawer" onClick={e => e.stopPropagation()}>
+                       <div className="drawer-header">
+                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                           <img 
+                             src={student?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedStudentMonitor.studentName}`} 
+                             alt={selectedStudentMonitor.studentName} 
+                             style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid var(--primary-400)' }} 
+                           />
+                           <div>
+                             <h3 style={{ margin: 0 }}>{selectedStudentMonitor.studentName}</h3>
+                             <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)' }}>ID: {student?.studentId || 'N/A'}</p>
+                           </div>
+                         </div>
+                         <button type="button" className="btn-icon" onClick={() => setSelectedStudentMonitor(null)}><X size={20}/></button>
+                       </div>
+
+                       <div className="drawer-body">
+                         <div className="drawer-section">
+                           <h4>Academic Profile</h4>
+                           <div className="profile-details-grid">
+                             <div className="detail-item">
+                               <span className="detail-label">Course Batch</span>
+                               <span className="detail-val">{courseName}</span>
+                             </div>
+                             <div className="detail-item">
+                               <span className="detail-label">Email</span>
+                               <span className="detail-val">{student?.email}</span>
+                             </div>
+                             <div className="detail-item">
+                               <span className="detail-label">Phone</span>
+                               <span className="detail-val">{student?.phone}</span>
+                             </div>
+                             <div className="detail-item">
+                               <span className="detail-label">Learning Streak</span>
+                               <span className="detail-val" style={{ color: '#f59e0b', fontWeight: 'bold' }}>🔥 {student?.streak || 0} Days</span>
+                             </div>
+                           </div>
+                         </div>
+
+                         <div className="drawer-section">
+                           <h4>Performance Breakdown</h4>
+                           <div className="perf-grid">
+                             <div className="perf-card">
+                               <span className="perf-num">{selectedStudentMonitor.score}%</span>
+                               <span className="perf-lbl">Latest Quiz Score</span>
+                             </div>
+                             <div className="perf-card">
+                               <span className="perf-num">{studentAvg}%</span>
+                               <span className="perf-lbl">Average Score</span>
+                             </div>
+                             <div className="perf-card">
+                               <span className="perf-num">{studentQuizzes.length}</span>
+                               <span className="perf-lbl">Quizzes Taken</span>
+                             </div>
+                           </div>
+                         </div>
+
+                         <div className="drawer-section">
+                           <h4>Academic History</h4>
+                           <div className="history-list">
+                             {studentQuizzes.map(sq => (
+                               <div key={sq.id} className="history-list-item">
+                                 <div>
+                                   <strong>{data?.quizzes?.find(q => q.id === sq.quizId)?.title || sq.quizId}</strong>
+                                   <span className="history-date">{new Date(sq.date).toLocaleDateString()}</span>
+                                 </div>
+                                 <span className={`score-badge ${sq.score > 60 ? 'pass' : 'fail'}`}>{sq.score}%</span>
+                               </div>
+                             ))}
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 );
+               })()}
              </section>
           </div>
         )}
@@ -699,7 +812,39 @@ export default function TeacherDashboard() {
                        </div>
                      )}
                      {d.status === 'pending' ? (
-                       <div className="reply-interface">
+                       <div className="reply-interface animate-fadeIn">
+                          <div className="doubt-templates" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
+                            {[
+                              "Great question! Here's the step-by-step breakdown:",
+                              "Please review the lecture video at 12:30 for a complete derivation.",
+                              "This is a common misconception. Let's solve it from first principles:",
+                              "Excellent attempt. The error is in the integration sign step.",
+                            ].map((tpl) => (
+                              <button
+                                key={tpl}
+                                type="button"
+                                className="badge"
+                                style={{
+                                  background: 'rgba(34, 211, 238, 0.08)',
+                                  color: 'var(--primary-400)',
+                                  border: '1px solid rgba(34, 211, 238, 0.2)',
+                                  borderRadius: '20px',
+                                  padding: '4px 12px',
+                                  fontSize: '11px',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.2s',
+                                }}
+                                onClick={() => {
+                                  setReplyText((prev) => ({
+                                    ...prev,
+                                    [d.id]: (prev[d.id] || '') + tpl + '\n',
+                                  }));
+                                }}
+                              >
+                                + {tpl.substring(0, 24)}...
+                              </button>
+                            ))}
+                          </div>
                           <textarea 
                             className="form-input" 
                             placeholder="Type your expert resolution here..." 
@@ -1048,6 +1193,29 @@ export default function TeacherDashboard() {
                           </div>
                         ))}
                       </div>
+
+                      {/* Live Question Preview Card */}
+                      <div className="live-question-preview-card" style={{ marginTop: '16px', marginBottom: '16px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '11px', color: 'var(--primary-400)', fontWeight: 600 }}>
+                          <span>LIVE QUESTION PREVIEW (STUDENT VIEW)</span>
+                          <span>+{testData.marksPerQuestion} / -{testData.negativeMarking}</span>
+                        </div>
+                        <h4 style={{ margin: '0 0 12px 0', fontSize: '14px', color: 'var(--text-primary)', fontWeight: 600 }}>
+                          {manualQuestion.text || <span style={{ color: 'var(--text-tertiary)', fontStyle: 'italic' }}>Your question text will appear here...</span>}
+                        </h4>
+                        <div className="preview-options-list" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          {manualQuestion.options.map((opt, idx) => (
+                            <div key={idx} className={`preview-option-item ${manualQuestion.answer === idx ? 'correct-preview' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: 'var(--gray-900)', border: manualQuestion.answer === idx ? '1px solid var(--primary)' : '1px solid var(--border-light)', borderRadius: '8px', fontSize: '13px' }}>
+                              <div className="radio-circle" style={{ width: '16px', height: '16px', borderRadius: '50%', border: '2px solid', borderColor: manualQuestion.answer === idx ? 'var(--primary)' : 'var(--text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                {manualQuestion.answer === idx && <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary)' }} />}
+                              </div>
+                              <span style={{ fontWeight: 600 }}>{['A', 'B', 'C', 'D'][idx]}.</span>
+                              <span>{opt || <span style={{ color: 'var(--text-tertiary)', fontStyle: 'italic' }}>Option placeholder...</span>}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
                       <button type="button" className="btn btn-secondary w-100" style={{ marginTop: '16px' }} onClick={handleAddQuestion}>
                         <Plus size={16} /> Add Question to Test
                       </button>
