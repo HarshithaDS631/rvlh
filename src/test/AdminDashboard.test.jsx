@@ -5,52 +5,12 @@ import { MemoryRouter } from 'react-router-dom';
 import * as AuthContext from '../context/AuthContext';
 import * as StoreContext from '../context/StoreContext';
 
-vi.mock('lucide-react', async () => {
-  return {
-    BookOpen: () => <div />,
-    Plus: () => <div />,
-    LayoutDashboard: () => <div />,
-    GraduationCap: () => <div />,
-    Users: () => <div />,
-    Activity: () => <div />,
-    Brain: () => <div />,
-    CreditCard: () => <div />,
-    Bell: () => <div />,
-    UserCog: () => <div />,
-    Search: () => <div />,
-    Menu: () => <div />,
-    X: () => <div />,
-    ChevronDown: () => <div />,
-    LogOut: () => <div />,
-    Settings: () => <div />,
-    ArrowRight: () => <div />,
-    Filter: () => <div />,
-    Download: () => <div />,
-    MoreVertical: () => <div />,
-    CheckCircle: () => <div />,
-    AlertCircle: () => <div />,
-    Clock: () => <div />,
-    Eye: () => <div />,
-    Trash2: () => <div />,
-    ChevronRight: () => <div />,
-    ChevronLeft: () => <div />,
-    Play: () => <div />,
-    FileText: () => <div />,
-    Check: () => <div />,
-    UserPlus: () => <div />,
-    ShieldCheck: () => <div />,
-    Send: () => <div />,
-    Info: () => <div />,
-    Mail: () => <div />,
-    Sparkles: () => <div />,
-    Zap: () => <div />,
-    Target: () => <div />,
-    Lock: () => <div />,
-    Crown: () => <div />,
-    Star: () => <div />,
-    ExternalLink: () => <div />,
-    Layers: () => <div />,
-  };
+vi.mock('lucide-react', () => {
+  return new Proxy({}, {
+    get: (target, name) => {
+      return (props) => <span {...props}>{name}</span>;
+    }
+  });
 });
 
 const mockUser = { id: 'admin-1', name: 'Admin User', role: 'admin', avatar: 'https://i.pravatar.cc/150?u=admin' };

@@ -5,35 +5,12 @@ import { MemoryRouter } from 'react-router-dom';
 import * as AuthContext from '../context/AuthContext';
 import * as StoreContext from '../context/StoreContext';
 
-vi.mock('lucide-react', async () => {
-  return {
-    ArrowRight: () => <div />,
-    ChevronRight: () => <div />,
-    Flame: () => <div />,
-    Target: () => <div />,
-    Zap: () => <div />,
-    Lock: () => <div />,
-    Crown: () => <div />,
-    Calendar: () => <div />,
-    Info: () => <div />,
-    AlertCircle: () => <div />,
-    Eye: () => <div />,
-    Play: () => <div />,
-    Video: () => <div />,
-    Brain: () => <div />,
-    BookOpen: () => <div />,
-    Bell: () => <div />,
-    Clock: () => <div />,
-    MessageSquare: () => <div />,
-    Send: () => <div />,
-    CheckSquare: () => <div />,
-    TrendingUp: () => <div />,
-    Download: () => <div />,
-    Star: () => <div />,
-    ExternalLink: () => <div />,
-    X: () => <div />,
-    CreditCard: () => <div />,
-  };
+vi.mock('lucide-react', () => {
+  return new Proxy({}, {
+    get: (target, name) => {
+      return (props) => <span {...props}>{name}</span>;
+    }
+  });
 });
 
 const mockUser = { 
